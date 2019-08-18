@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.XZYHOrderingFood.back.dao.UserPermissionRefMapper" >
+  <resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.UserPermissionRef" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="permission_id" property="permissionId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, permission_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_permission_ref
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from user_permission_ref
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <!-- 通过用户id删除对应数据 -->
+  <delete id="delByUserId" parameterType="string" >
+  	delete from user_permission_ref
+  	where user_id = #{id}
+  </delete>
+  
+  <insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.UserPermissionRef" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_permission_ref (user_id, permission_id)
+    values (#{userId,jdbcType=VARCHAR}, #{permissionId,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 批量插入数据 -->
+  <insert id="batchInsert" parameterType="com.XZYHOrderingFood.back.pojo.TUser">
+   insert into user_permission_ref (user_id, permission_id) 
+   values
+   <foreach collection="perList" item="per" separator=",">
+   		 (#{id,jdbcType=VARCHAR}, #{per.id,jdbcType=VARCHAR})
+   </foreach>
+  </insert>
+  
+  
+  <insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.UserPermissionRef" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_permission_ref
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="permissionId != null" >
+        permission_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionId != null" >
+        #{permissionId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.UserPermissionRef" >
+    update user_permission_ref
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionId != null" >
+        permission_id = #{permissionId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.UserPermissionRef" >
+    update user_permission_ref
+    set user_id = #{userId,jdbcType=VARCHAR},
+      permission_id = #{permissionId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

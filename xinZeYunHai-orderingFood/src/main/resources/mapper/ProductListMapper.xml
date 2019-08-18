@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.ProductListMapper">
+    <resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.ProductList">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+        <result column="menu_id" jdbcType="VARCHAR" property="menuId" />
+        <result column="is_hotsell" jdbcType="INTEGER" property="isHotsell" />
+        <result column="is_newproduct" jdbcType="INTEGER" property="isNewproduct" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="is_fixedsell" jdbcType="INTEGER" property="isFixedsell" />
+        <result column="sell_number" jdbcType="INTEGER" property="sellNumber" />
+        <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+        <result column="rest_number" jdbcType="INTEGER" property="restNumber" />
+        <result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+        <result column="is_active" jdbcType="INTEGER" property="isActive" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+        <result column="product_img" jdbcType="VARCHAR" property="productImg" />
+        <result column="product_type_id" jdbcType="VARCHAR" property="productTypeId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, product_name, menu_name, menu_id, is_hotsell, is_newproduct, price, is_fixedsell,
+    sell_number, introduce, rest_number, tuser_id, is_active, create_id, create_time,
+    modify_id, modify_time, product_img, product_type_id
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_list
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <!-- add by zpy 查询商户单品详情-->
+    <select id="selectProductListByShopId" parameterType="java.util.List"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_list
+        where menu_id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+	
+	<!-- 通过单品id查询 -->
+	<select id="getproductInfo" parameterType="com.XZYHOrderingFood.back.pojo.ProductList"
+	 resultMap="BaseResultMap">
+	 	select
+        <include refid="Base_Column_List" />
+         from product_list
+         where id = #{id}
+	 </select>
+
+    <!-- 分页查询商户商品列表 -->
+    <select id="pageList" parameterType="com.XZYHOrderingFood.back.pojo.ProductList"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_list
+        where tuser_id = #{tuserId}
+        <if test="productName != null and productName != ''">
+            and product_name like CONCAT('%','${productName}','%')
+        </if>
+        <if test="menuId != null and menuId != '' ">
+            and menu_id = #{menuId}
+        </if>
+        <if test="isHotsell != null ">
+            and is_hotsell = #{isHotsell}
+        </if>
+        <if test="isNewproduct != null ">
+            and is_newproduct = #{isNewproduct}
+        </if>
+        /* 0-小于50 1-50到100 2-100到200 3-200到500 4-500以上 */
+        <if test="priceFlag == 0 ">
+            and price &lt; 50.00
+        </if>
+        <if test="priceFlag == 1 ">
+            and price between 50.00 and 100.00
+        </if>
+        <if test="priceFlag == 2 ">
+            and price between 100.00 and 200.00
+        </if>
+        <if test="priceFlag == 3 ">
+            and price between 200.00 and 500.00
+        </if>
+        <if test="priceFlag == 4 ">
+            and price &gt;= 500.00.00
+        </if>
+        <if test="isFixedsell != null ">
+            and is_fixedsell = #{isFixedsell}
+        </if>
+        <if test="isActive != null ">
+            and is_active = #{isActive}
+        </if>
+        order by
+        <!-- 0-倒叙 1-正序  -->
+        <if test="sellNumberFlag == 0 ">
+            sell_number desc,
+        </if>
+        <if test="sellNumberFlag == 1 ">
+            sell_number asc,
+        </if>
+        create_time desc
+    </select>
+    <!-- 查询单品名称是否存在 -->
+    <select id="findByParam" parameterType="com.XZYHOrderingFood.back.pojo.ProductList"
+            resultType="com.XZYHOrderingFood.back.pojo.ProductList">
+        select
+        <include refid="Base_Column_List" />
+        from product_list
+        where tuser_id = #{tuserId}
+        and product_name = #{productName}
+    </select>
+
+    <!-- add by zpy 通过主键集合查询多条数据-->
+    <select id="selectProductListByIdList" parameterType="com.XZYHOrderingFood.back.pojo.ProductList"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_list
+        where id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--模糊查询列表  -->
+    <select id="selectProductList" resultMap="BaseResultMap" parameterType="com.XZYHOrderingFood.back.pojo.ProductList">
+        select <include refid="Base_Column_List" />
+        from product_list
+        <where>
+            <if test="productName!=null and productName!=''">
+                product_name like concat("%",#{productName},"%") and
+            </if>
+            tuser_id = #{tuserId,jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <!-- add by zpy 通过userid查询单品列表 -->
+    <select id="selectProductListByUserId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select <include refid="Base_Column_List" />
+        from product_list
+        <where>
+            and tuser_id = #{id}
+            and is_active = 1
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_list
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.ProductList">
+    insert into product_list (id, product_name, menu_name,
+      menu_id, is_hotsell, is_newproduct,
+      price, is_fixedsell, sell_number,
+      introduce, rest_number, tuser_id,
+      is_active, create_id, create_time,
+      modify_id, modify_time, product_img,
+      product_type_id)
+    values (#{id,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR},
+      #{menuId,jdbcType=VARCHAR}, #{isHotsell,jdbcType=INTEGER}, #{isNewproduct,jdbcType=INTEGER},
+      #{price,jdbcType=DECIMAL}, #{isFixedsell,jdbcType=INTEGER}, #{sellNumber,jdbcType=INTEGER},
+      #{introduce,jdbcType=VARCHAR}, #{restNumber,jdbcType=INTEGER}, #{tuserId,jdbcType=VARCHAR},
+      #{isActive,jdbcType=INTEGER}, #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{productImg,jdbcType=VARCHAR},
+      #{productTypeId,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.ProductList">
+        insert into product_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="menuName != null">
+                menu_name,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+            <if test="isHotsell != null">
+                is_hotsell,
+            </if>
+            <if test="isNewproduct != null">
+                is_newproduct,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="isFixedsell != null">
+                is_fixedsell,
+            </if>
+            <if test="sellNumber != null">
+                sell_number,
+            </if>
+            <if test="introduce != null">
+                introduce,
+            </if>
+            <if test="restNumber != null">
+                rest_number,
+            </if>
+            <if test="tuserId != null">
+                tuser_id,
+            </if>
+            <if test="isActive != null">
+                is_active,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyId != null">
+                modify_id,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="productImg != null">
+                product_img,
+            </if>
+            <if test="productTypeId != null">
+                product_type_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=VARCHAR},
+            </if>
+            <if test="isHotsell != null">
+                #{isHotsell,jdbcType=INTEGER},
+            </if>
+            <if test="isNewproduct != null">
+                #{isNewproduct,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="isFixedsell != null">
+                #{isFixedsell,jdbcType=INTEGER},
+            </if>
+            <if test="sellNumber != null">
+                #{sellNumber,jdbcType=INTEGER},
+            </if>
+            <if test="introduce != null">
+                #{introduce,jdbcType=VARCHAR},
+            </if>
+            <if test="restNumber != null">
+                #{restNumber,jdbcType=INTEGER},
+            </if>
+            <if test="tuserId != null">
+                #{tuserId,jdbcType=VARCHAR},
+            </if>
+            <if test="isActive != null">
+                #{isActive,jdbcType=INTEGER},
+            </if>
+            <if test="createId != null">
+                #{createId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyId != null">
+                #{modifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="productImg != null">
+                #{productImg,jdbcType=VARCHAR},
+            </if>
+            <if test="productTypeId != null">
+                #{productTypeId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- add by zpy 批量修改单品数量-->
+    <update id="updateProductListById" parameterType="java.util.List">
+        <foreach collection="productList" item="item" open="" close="" separator=";">
+            update product_list
+            <set>
+                <if test="item.restNumber != null">
+                    rest_number = #{item.restNumber,jdbcType=INTEGER},
+                </if>
+                <if test="item.modifyTime != null">
+                    modify_time = #{item.modifyTime,jdbcType=TIMESTAMP},
+                </if>
+            </set>
+            where id = #{item.id,jdbcType=VARCHAR}
+        </foreach>
+
+    </update>
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.ProductList">
+        update product_list
+        <set>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuName != null">
+                menu_name = #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=VARCHAR},
+            </if>
+            <if test="isHotsell != null">
+                is_hotsell = #{isHotsell,jdbcType=INTEGER},
+            </if>
+            <if test="isNewproduct != null">
+                is_newproduct = #{isNewproduct,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="isFixedsell != null">
+                is_fixedsell = #{isFixedsell,jdbcType=INTEGER},
+            </if>
+            <if test="sellNumber != null">
+                sell_number = #{sellNumber,jdbcType=INTEGER},
+            </if>
+            <if test="introduce != null">
+                introduce = #{introduce,jdbcType=VARCHAR},
+            </if>
+            <if test="restNumber != null">
+                rest_number = #{restNumber,jdbcType=INTEGER},
+            </if>
+            <if test="tuserId != null">
+                tuser_id = #{tuserId,jdbcType=VARCHAR},
+            </if>
+            <if test="isActive != null">
+                is_active = #{isActive,jdbcType=INTEGER},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyId != null">
+                modify_id = #{modifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="productImg != null">
+                product_img = #{productImg,jdbcType=VARCHAR},
+            </if>
+            <if test="productTypeId != null">
+                product_type_id = #{productTypeId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.ProductList">
+    update product_list
+    set product_name = #{productName,jdbcType=VARCHAR},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_id = #{menuId,jdbcType=VARCHAR},
+      is_hotsell = #{isHotsell,jdbcType=INTEGER},
+      is_newproduct = #{isNewproduct,jdbcType=INTEGER},
+      price = #{price,jdbcType=DECIMAL},
+      is_fixedsell = #{isFixedsell,jdbcType=INTEGER},
+      sell_number = #{sellNumber,jdbcType=INTEGER},
+      introduce = #{introduce,jdbcType=VARCHAR},
+      rest_number = #{restNumber,jdbcType=INTEGER},
+      tuser_id = #{tuserId,jdbcType=VARCHAR},
+      is_active = #{isActive,jdbcType=INTEGER},
+      create_id = #{createId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_id = #{modifyId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      product_img = #{productImg,jdbcType=VARCHAR},
+      product_type_id = #{productTypeId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

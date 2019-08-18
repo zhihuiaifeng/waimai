@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.TUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.TUser">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="is_shops" jdbcType="INTEGER" property="isShops" />
+        <result column="is_first_login" jdbcType="INTEGER" property="isFirstLogin" />
+        <result column="is_active" jdbcType="INTEGER" property="isActive" />
+        <result column="clientname" jdbcType="VARCHAR" property="clientname" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="area" jdbcType="VARCHAR" property="area" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+        <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+        <result column="open_id" jdbcType="VARCHAR" property="openId" />
+        <result column="table_max_number" jdbcType="INTEGER" property="tableMaxNumber" />
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="salt" jdbcType="VARCHAR" property="salt" />
+        <result column="otp_code" jdbcType="VARCHAR" property="otpCode" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+        <result column="otp_over_time" jdbcType="TIMESTAMP" property="otpOverTime" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+        <result column="airline_number" jdbcType="VARCHAR" property="airlineNumber" />
+        <result column="expire_time" jdbcType="INTEGER" property="expireTime" />
+        <result column="shop_notice" jdbcType="VARCHAR" property="shopNotice" />
+        <result column="park_space" jdbcType="VARCHAR" property="parkSpace" />
+        <result column="business_hours_begin" jdbcType="VARCHAR" property="businessHoursBegin" />
+        <result column="business_hours_end" jdbcType="VARCHAR" property="businessHoursEnd" />
+        <result column="shop_img" jdbcType="VARCHAR" property="shopImg" />
+        <result column="special_service" jdbcType="VARCHAR" property="specialService" />
+        <result column="ticket_status" jdbcType="INTEGER" property="ticketStatus" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, username, password, is_shops, is_first_login, is_active, clientname, province,
+    city, area, address, contact_name, contact_phone, open_id, table_max_number, start_time,
+    end_time, salt, otp_code, create_id, create_time, modify_id, modify_time, otp_over_time,
+    status, area_code, airline_number, expire_time, shop_notice, park_space, business_hours_begin,
+    business_hours_end, shop_img, special_service, ticket_status
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_user
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        order by create_time desc
+    </select>
+    <!--    通过名称查询用户 -->
+    <select id="findUserByName" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where account = #{name}
+    </select>
+    <!--  参数查询用户 判断账号是否存在
+    <select id="findByUserCheckAccount" resultType="com.xinZeYunHai.back.common.pojo.TUser">
+        select
+         <include refid="Base_Column_List" />
+         from t_user
+         where 1=1
+         <if test="id != null">
+         and id &lt;&gt; #{id}
+         </if>
+         <if test="account != null">
+             and account = #{account}
+         </if>
+    </select>  -->
+
+
+    <!-- 查询用户是否存在 -->
+    <select id="findUserIsExis" parameterType="com.XZYHOrderingFood.back.pojo.TUser"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where 1=1
+        <if test="username != null">
+         and  username = #{username}
+        </if>
+       
+        <if test="id != null">
+            and id &lt;&gt; #{id}
+        </if>
+        
+        <if test="contactPhone != null">
+        	and contact_phone = #{contactPhone}
+        </if>
+
+    </select>
+
+    <!-- add by zpy 通过用户名查询数据-->
+    <select id="findUsernameIsExist" parameterType="com.XZYHOrderingFood.back.pojo.TUser"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where
+        <if test="username != null">
+            username = #{username}
+        </if>
+    </select>
+
+    <!-- add by zpy 通过手机号查询用户是否存在 -->
+    <select id="findUserPhoneIsExis" parameterType="com.XZYHOrderingFood.back.pojo.TUser"
+            resultMap="BaseResultMap">
+        select
+        count(*)
+        from t_user
+        where contact_phone = #{contactPhone}
+    </select>
+
+    <!-- 通过参数查询用户 -->
+    <select id="findUserByParam" parameterType="com.XZYHOrderingFood.back.pojo.TUser"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where 1=1
+        <if test="username != null">
+            and username = #{username}
+        </if>
+    </select>
+
+    <!-- add by zpy 查询后台用户-->
+    <select id="selectBackEndUser"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where is_shops = 0
+    </select>
+
+    <!-- add by zpy 通过id集合查询多个商户-->
+    <select id="selectByIdList"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+<!-- updateUserExpireTime -->
+  <update id="updateUserExpireTime" parameterType="com.XZYHOrderingFood.back.pojo.TUser" >
+  	update t_user
+  	set expire_time = #{expireTime},
+  	is_active = #{isActive}
+  	where id = #{id,jdbcType=INTEGER}
+  </update>
+
+<!--  查询出全部  >=起始时间 和 <= 截止时间 的商户 status = 1启用    is_active != 0 -->
+<select id="findNoexpireTimeUser" parameterType="java.util.Date" resultMap="BaseResultMap">
+	select
+     <include refid="Base_Column_List"/>
+      from t_user
+      where is_shops = 1
+      and is_active &lt;&gt; 0
+      and status &lt;&gt; 0
+      AND now() &gt;= start_time
+      AND now() &lt;= end_time
+
+</select>
+
+    <!-- 统计数量sql -->
+    <select id="countShopNumber"
+            resultType="int">
+		select count(*)
+		from t_user
+		where is_shops = 1
+	</select>
+
+    <!-- add by zpy 查询所有商户省份信息-->
+    <select id="getShopInfo" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+         where is_shops = 1
+
+                <if test="param.tuser.username != null and param.tuser.username != ''">
+                    and username like CONCAT('%','${param.tuser.username}','%')
+                </if>
+                <if test="param.tuser.clientname != null and param.tuser.clientname != ''">
+                    and clientname like CONCAT('%','${param.tuser.clientname}','%')
+                </if>
+                <if test="param.tuser.province != null">
+                    and province = #{param.tuser.province}
+                </if>
+                <if test="param.tuser.city != null">
+                    and city = #{param.tuser.city}
+                </if>
+                <if test="param.tuser.area != null">
+                    and area = #{param.tuser.area}
+                </if>
+                <if test="param.tuser.contactName != null and param.tuser.contactName != ''">
+                    and contact_name like CONCAT('%','${param.tuser.contactName}','%')
+                </if>
+                <if test="param.tuser.contactPhone != null and param.tuser.contactPhone != ''">
+                    and contact_phone = #{param.tuser.contactPhone}
+                </if>
+                <if test="param.tuser.isFirstLogin != null">
+                    and is_first_login = #{param.tuser.isFirstLogin}
+                </if>
+                <if test="param.tuser.openId != null and param.tuser.openId != ''">
+                    and open_id like CONCAT('%','${param.tuser.openId}','%')
+                </if>
+                <!--  0-小于10 1-10到50 2-50到100 3-100以上 -->
+                <if test="param.tuser.tableMaxNumberFlag == 0">
+                    and table_max_number &lt; 10
+                </if>
+                <if test="param.tuser.tableMaxNumberFlag == 1">
+                    and table_max_number between 10 and 50
+                </if>
+                <if test="param.tuser.tableMaxNumberFlag == 2">
+                    and table_max_number between 50 and 100
+                </if>
+                <if test="param.tuser.tableMaxNumberFlag == 3">
+                    and table_max_number &gt;= 100
+                </if>
+                <!-- 0-小于30 1-30到365 2-364以上 -->
+                <if test="param.tuser.expireTimeFlag == 0">
+                    and end_time &gt; #{param.endDate}
+                </if>
+                <if test="param.tuser.expireTimeFlag == 1">
+                    and end_time between #{param.endDate} and #{param.startDate}
+                </if>
+                <if test="param.tuser.expireTimeFlag == 2">
+                    and end_time &lt; #{param.startDate}
+                </if>
+                <if test="param.tuser.status != null">
+                    and status = #{param.tuser.status}
+                </if>
+
+
+        order by create_time desc
+    </select>
+
+    <!-- add by zpy 统计即将到期商户-->
+    <select id="countExpireShop"
+            resultType="int">
+		select count(*)
+		from t_user
+		where is_active = 2
+	</select>
+
+    <!-- add by zpy 通过时间获取商户信息-->
+    <select id="getNewShopCharts" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where start_time between DATE_FORMAT(#{param.dateStart}, '%Y-%m-%d %T:%i:%s') and DATE_FORMAT(#{param.dateEnd},
+        '%Y-%m-%d %T:%i:%s')
+        and is_shops=1
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.TUser">
+    insert into t_user (id, username, password,
+      is_shops, is_first_login, is_active,
+      clientname, province, city,
+      area, address, contact_name,
+      contact_phone, open_id, table_max_number,
+      start_time, end_time, salt,
+      otp_code, create_id, create_time,
+      modify_id, modify_time, otp_over_time,
+      status, area_code, airline_number,
+      expire_time, shop_notice, park_space,
+      business_hours_begin, business_hours_end, shop_img,
+      special_service, ticket_status)
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{isShops,jdbcType=INTEGER}, #{isFirstLogin,jdbcType=INTEGER}, #{isActive,jdbcType=INTEGER},
+      #{clientname,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+      #{area,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR},
+      #{contactPhone,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, #{tableMaxNumber,jdbcType=INTEGER},
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{salt,jdbcType=VARCHAR},
+      #{otpCode,jdbcType=VARCHAR}, #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{otpOverTime,jdbcType=TIMESTAMP},
+      #{status,jdbcType=INTEGER}, #{areaCode,jdbcType=VARCHAR}, #{airlineNumber,jdbcType=VARCHAR},
+      #{expireTime,jdbcType=INTEGER}, #{shopNotice,jdbcType=VARCHAR}, #{parkSpace,jdbcType=VARCHAR},
+      #{businessHoursBegin,jdbcType=VARCHAR}, #{businessHoursEnd,jdbcType=VARCHAR}, #{shopImg,jdbcType=VARCHAR},
+      #{specialService,jdbcType=VARCHAR}, #{ticketStatus,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.TUser">
+        insert into t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="isShops != null">
+                is_shops,
+            </if>
+            <if test="isFirstLogin != null">
+                is_first_login,
+            </if>
+            <if test="isActive != null">
+                is_active,
+            </if>
+            <if test="clientname != null">
+                clientname,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="area != null">
+                area,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="contactName != null">
+                contact_name,
+            </if>
+            <if test="contactPhone != null">
+                contact_phone,
+            </if>
+            <if test="openId != null">
+                open_id,
+            </if>
+            <if test="tableMaxNumber != null">
+                table_max_number,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="salt != null">
+                salt,
+            </if>
+            <if test="otpCode != null">
+                otp_code,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyId != null">
+                modify_id,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="otpOverTime != null">
+                otp_over_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="areaCode != null">
+                area_code,
+            </if>
+            <if test="airlineNumber != null">
+                airline_number,
+            </if>
+            <if test="expireTime != null">
+                expire_time,
+            </if>
+            <if test="shopNotice != null">
+                shop_notice,
+            </if>
+            <if test="parkSpace != null">
+                park_space,
+            </if>
+            <if test="businessHoursBegin != null">
+                business_hours_begin,
+            </if>
+            <if test="businessHoursEnd != null">
+                business_hours_end,
+            </if>
+            <if test="shopImg != null">
+                shop_img,
+            </if>
+            <if test="specialService != null">
+                special_service,
+            </if>
+            <if test="ticketStatus != null">
+                ticket_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="isShops != null">
+                #{isShops,jdbcType=INTEGER},
+            </if>
+            <if test="isFirstLogin != null">
+                #{isFirstLogin,jdbcType=INTEGER},
+            </if>
+            <if test="isActive != null">
+                #{isActive,jdbcType=INTEGER},
+            </if>
+            <if test="clientname != null">
+                #{clientname,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableMaxNumber != null">
+                #{tableMaxNumber,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="salt != null">
+                #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="otpCode != null">
+                #{otpCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createId != null">
+                #{createId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyId != null">
+                #{modifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="otpOverTime != null">
+                #{otpOverTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="areaCode != null">
+                #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="airlineNumber != null">
+                #{airlineNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="expireTime != null">
+                #{expireTime,jdbcType=INTEGER},
+            </if>
+            <if test="shopNotice != null">
+                #{shopNotice,jdbcType=VARCHAR},
+            </if>
+            <if test="parkSpace != null">
+                #{parkSpace,jdbcType=VARCHAR},
+            </if>
+            <if test="businessHoursBegin != null">
+                #{businessHoursBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="businessHoursEnd != null">
+                #{businessHoursEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="shopImg != null">
+                #{shopImg,jdbcType=VARCHAR},
+            </if>
+            <if test="specialService != null">
+                #{specialService,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketStatus != null">
+                #{ticketStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.TUser">
+        update t_user
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="isShops != null">
+                is_shops = #{isShops,jdbcType=INTEGER},
+            </if>
+            <if test="isFirstLogin != null">
+                is_first_login = #{isFirstLogin,jdbcType=INTEGER},
+            </if>
+            <if test="isActive != null">
+                is_active = #{isActive,jdbcType=INTEGER},
+            </if>
+            <if test="clientname != null">
+                clientname = #{clientname,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                contact_name = #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableMaxNumber != null">
+                table_max_number = #{tableMaxNumber,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="salt != null">
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="otpCode != null">
+                otp_code = #{otpCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyId != null">
+                modify_id = #{modifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="otpOverTime != null">
+                otp_over_time = #{otpOverTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="areaCode != null">
+                area_code = #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="airlineNumber != null">
+                airline_number = #{airlineNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=INTEGER},
+            </if>
+            <if test="shopNotice != null">
+                shop_notice = #{shopNotice,jdbcType=VARCHAR},
+            </if>
+            <if test="parkSpace != null">
+                park_space = #{parkSpace,jdbcType=VARCHAR},
+            </if>
+            <if test="businessHoursBegin != null">
+                business_hours_begin = #{businessHoursBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="businessHoursEnd != null">
+                business_hours_end = #{businessHoursEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="shopImg != null">
+                shop_img = #{shopImg,jdbcType=VARCHAR},
+            </if>
+            <if test="specialService != null">
+                special_service = #{specialService,jdbcType=VARCHAR},
+            </if>
+            <if test="ticketStatus != null">
+                ticket_status = #{ticketStatus,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.TUser">
+    update t_user
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      is_shops = #{isShops,jdbcType=INTEGER},
+      is_first_login = #{isFirstLogin,jdbcType=INTEGER},
+      is_active = #{isActive,jdbcType=INTEGER},
+      clientname = #{clientname,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      contact_name = #{contactName,jdbcType=VARCHAR},
+      contact_phone = #{contactPhone,jdbcType=VARCHAR},
+      open_id = #{openId,jdbcType=VARCHAR},
+      table_max_number = #{tableMaxNumber,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      salt = #{salt,jdbcType=VARCHAR},
+      otp_code = #{otpCode,jdbcType=VARCHAR},
+      create_id = #{createId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_id = #{modifyId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      otp_over_time = #{otpOverTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      area_code = #{areaCode,jdbcType=VARCHAR},
+      airline_number = #{airlineNumber,jdbcType=VARCHAR},
+      expire_time = #{expireTime,jdbcType=INTEGER},
+      shop_notice = #{shopNotice,jdbcType=VARCHAR},
+      park_space = #{parkSpace,jdbcType=VARCHAR},
+      business_hours_begin = #{businessHoursBegin,jdbcType=VARCHAR},
+      business_hours_end = #{businessHoursEnd,jdbcType=VARCHAR},
+      shop_img = #{shopImg,jdbcType=VARCHAR},
+      special_service = #{specialService,jdbcType=VARCHAR},
+      ticket_status = #{ticketStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

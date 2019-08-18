@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.QrCodeMapper">
+	<resultMap id="BaseResultMap"
+		type="com.XZYHOrderingFood.back.pojo.QrCode">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+		<result column="table_number" jdbcType="INTEGER"
+			property="tableNumber" />
+		<result column="table_status" jdbcType="INTEGER"
+			property="tableStatus" />
+		<result column="create_id" jdbcType="VARCHAR"
+			property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="modify_id" jdbcType="VARCHAR"
+			property="modifyId" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+		<result column="is_delete" jdbcType="INTEGER"
+			property="isDelete" />
+		<result column="qr_img_chain" jdbcType="VARCHAR"
+			property="qrImgChain" />
+		<result column="qr_img_name" jdbcType="VARCHAR"
+			property="qrImgName" />
+		<result column="ticket" jdbcType="VARCHAR"
+			property="ticket" />
+			
+		<result column="short_url" jdbcType="VARCHAR"
+			property="shortUrl" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, tuser_id, table_number, table_status, create_id, create_time,
+		modify_id, modify_time,
+		is_delete, qr_img_chain, qr_img_name,ticket, short_url
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from qr_code
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<!-- 通过用户id查询最大桌号 -->
+	<select id="getMaxTableNumByTUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+		 max(table_number) 
+		from qr_code
+		where tuser_id = #{tUserId}
+	</select>
+	<select id="selectByShopId" parameterType="java.lang.String"
+			resultMap="BaseResultMap" >
+		select
+		<include refid="Base_Column_List" />
+		from qr_code
+		where tuser_id = #{id,jdbcType=VARCHAR}
+		and is_delete = 1
+	</select>
+
+	<update id="updateQrCodeStatusById" parameterType="java.util.Map">
+		update
+		qr_code
+		<set>
+			table_status = #{param.tableStatus}
+		</set>
+		<where>
+			<trim prefixOverrides="and">
+				<if test="param.isShops == 1">
+					and tuser_id = #{param.shopId}
+				</if>
+				and id = #{param.qrCodeId}
+			</trim>
+		</where>
+	</update>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from qr_code
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.XZYHOrderingFood.back.pojo.QrCode">
+		insert into qr_code (id, tuser_id, table_number,
+		table_status, create_id, create_time,
+		modify_id, modify_time, is_delete,
+		qr_img_chain, qr_img_name)
+		values (#{id,jdbcType=VARCHAR}, #{tuserId,jdbcType=VARCHAR},
+		#{tableNumber,jdbcType=VARCHAR},
+		#{tableStatus,jdbcType=INTEGER}, #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+		#{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+		#{isDelete,jdbcType=INTEGER},
+		#{qrImgChain,jdbcType=VARCHAR}, #{qrImgName,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.QrCode">
+		insert into qr_code
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="tuserId != null">
+				tuser_id,
+			</if>
+			<if test="tableNumber != null">
+				table_number,
+			</if>
+			<if test="tableStatus != null">
+				table_status,
+			</if>
+			<if test="createId != null">
+				create_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifyId != null">
+				modify_id,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="isDelete != null">
+				is_delete,
+			</if>
+			<if test="qrImgChain != null">
+				qr_img_chain,
+			</if>
+			<if test="qrImgName != null">
+				qr_img_name,
+			</if>
+			<if test="ticket != null">
+				ticket,
+			</if>
+			<if test="shortUrl != null">
+				short_url,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				#{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="tableNumber != null">
+				#{tableNumber,jdbcType=INTEGER},
+			</if>
+			<if test="tableStatus != null">
+				#{tableStatus,jdbcType=INTEGER},
+			</if>
+			<if test="createId != null">
+				#{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				#{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDelete != null">
+				#{isDelete,jdbcType=INTEGER},
+			</if>
+			<if test="qrImgChain != null">
+				#{qrImgChain,jdbcType=VARCHAR},
+			</if>
+			<if test="qrImgName != null">
+				#{qrImgName,jdbcType=VARCHAR},
+			</if>
+			<if test="ticket != null">
+				#{ticket},
+			</if>
+			<if test="shortUrl != null">
+				#{shortUrl},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 跟新二维码状态 -->
+	<update id="updateTableStatusByUserId" 
+	parameterType="com.XZYHOrderingFood.back.pojo.QrCode">
+	update qr_code
+	set table_status = #{tableStatus}
+	where tuser_id = #{tuserId}
+	</update>
+	
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.QrCode">
+		update qr_code
+		<set>
+			<if test="tuserId != null">
+				tuser_id = #{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="tableNumber != null">
+				table_number = #{tableNumber,jdbcType=INTEGER},
+			</if>
+			<if test="tableStatus != null">
+				table_status = #{tableStatus,jdbcType=INTEGER},
+			</if>
+			<if test="createId != null">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDelete != null">
+				is_delete = #{isDelete,jdbcType=INTEGER},
+			</if>
+			<if test="qrImgChain != null">
+				qr_img_chain = #{qrImgChain,jdbcType=VARCHAR},
+			</if>
+			<if test="qrImgName != null">
+				qr_img_name = #{qrImgName,jdbcType=VARCHAR},
+			</if>
+			<if test="ticket != null">
+				ticket = #{ticket},
+			</if>
+			<if test="shortUrl != null">
+				short_url = #{shortUrl},
+			</if>
+			
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.XZYHOrderingFood.back.pojo.QrCode">
+		update qr_code
+		set tuser_id = #{tuserId,jdbcType=VARCHAR},
+		table_number = #{tableNumber,jdbcType=INTEGER},
+		table_status = #{tableStatus,jdbcType=INTEGER},
+		create_id = #{createId,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modify_id = #{modifyId,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+		is_delete = #{isDelete,jdbcType=INTEGER},
+		qr_img_chain = #{qrImgChain,jdbcType=VARCHAR},
+		qr_img_name = #{qrImgName,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

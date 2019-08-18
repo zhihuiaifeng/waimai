@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.XZYHOrderingFood.back</groupId>
+	<artifactId>xinZeYunHai-orderingFood</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>xinZeYunHai-orderingFood</name>
+	<description>鑫泽云海点餐宝</description>
+	<packaging>jar</packaging>
+
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.4.RELEASE</version>
+		<relativePath />
+	</parent>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+
+		<!-- 编码解码工具Base64、MD5、Hex、SHA1、DES等 -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<!-- springboot依赖包 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency><!-- springboot热部署 -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- excel依赖 -->
+		<dependency>
+			<groupId>cn.afterturn</groupId>
+			<artifactId>easypoi-base</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+
+		<!-- websocket通信 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.afterturn</groupId>
+			<artifactId>easypoi-web</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.9</version>
+		</dependency>
+
+		<!-- poi jar -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.afterturn</groupId>
+			<artifactId>easypoi-annotation</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<!-- 日志 -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- mysql数据库 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+
+		<!-- mybaitis 包 -->
+		<!-- <dependency> <groupId>com.baomidou</groupId> <artifactId>mybatis-plus-boot-starter</artifactId> 
+			<version>3.0-beta</version> </dependency> -->
+
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<!-- alibaba数据库连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.19</version>
+		</dependency>
+
+		<!-- 阿里短信 -->
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-core</artifactId>
+			<version>4.0.3</version>
+		</dependency>
+
+		<!-- json处理工具 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.44</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
+		<!-- <dependency> <groupId>net.sf.ehcache</groupId> <artifactId>ehcache</artifactId> 
+			<version>2.10.4</version> </dependency> -->
+
+
+
+		<!-- 常用工具类如StringUtils -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<!-- http工具包 -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+
+		<!--pagehelper 分页插件 -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.6-jre</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+
+		</dependency>
+
+		<!-- joda时间处理 -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+
+		<!-- 文件类型检查工具如mp4 -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>1.17</version>
+		</dependency>
+		<!-- 获取文件类型 -->
+		<dependency>
+			<groupId>jmimemagic</groupId>
+			<artifactId>jmimemagic</artifactId>
+			<version>0.1.2</version>
+		</dependency>
+
+
+		<!-- 压缩图片 -->
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>0.4.8</version>
+		</dependency>
+
+		<!-- 文件上传 -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
+		<!-- FileUtils、IOUtils、FilenameUtils和FileSystemUtils -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<!-- 阿里sdk -->
+		<dependency>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<!-- Java8对Guava缓存的 重写包 https://www.jianshu.com/p/c72fb0c787fc -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+
+		<!-- 读取文件编码 -->
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>2.7.6</version>
+		</dependency>
+
+		<!-- 读取csv -->
+		<dependency>
+			<groupId>net.sourceforge.javacsv</groupId>
+			<artifactId>javacsv</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<!-- 微信支付sdk -->
+
+		<dependency>
+			<groupId>wx-1.0-jar-with-dependencies</groupId>
+			<artifactId>wx-1.0-jar-with-dependencies</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/wx-1.0-jar-with-dependencies.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>wx-1.0-sources</groupId>
+			<artifactId>wx-1.0-sources</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/wx-1.0-sources.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>wx-1.0</groupId>
+			<artifactId>wx-1.0</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/wx-1.0.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.vioao</groupId>
+			<artifactId>wechat-sdk</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.wxpay</groupId>
+			<artifactId>wxpay-sdk</artifactId>
+			<version>0.0.3</version>
+		</dependency>
+
+
+		<!-- beanutils -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+		<!-- 登录验证码 -->
+		<dependency>
+			<groupId>com.github.bingoohuang</groupId>
+			<artifactId>java-utils</artifactId>
+			<version>0.0.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.bingoohuang/patchca -->
+		<dependency>
+			<groupId>com.github.bingoohuang</groupId>
+			<artifactId>patchca</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<!-- 分布式id生成器 -->
+		<!-- https://mvnrepository.com/artifact/com.imadcn.framework/idworker -->
+		<dependency>
+			<groupId>com.github.bingoohuang</groupId>
+			<artifactId>idworker-client</artifactId>
+			<version>0.0.8</version>
+		</dependency>
+
+		<!-- token 生成器 -->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+
+		<!-- redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>1.5.2.RELEASE</version><!--$NO-MVN-MAN-VER$ -->
+		</dependency>
+
+		<!-- 二维码支持包 -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.glxn</groupId>
+			<artifactId>qrgen</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.retroweaver/retroweaver-rt -->
+		<dependency>
+			<groupId>net.sourceforge.retroweaver</groupId>
+			<artifactId>retroweaver-rt</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

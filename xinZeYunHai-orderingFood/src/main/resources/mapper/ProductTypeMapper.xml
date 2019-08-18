@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.ProductTypeMapper">
+	<resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.ProductType">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+		<result column="meun_name" jdbcType="VARCHAR" property="meunName" />
+		<result column="is_edit" jdbcType="INTEGER" property="isEdit" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+		<result column="meun_id" jdbcType="VARCHAR" property="meunId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, tuser_id, meun_name, is_edit, create_id, create_time, modify_id, modify_time,
+    is_delete, sort, meun_id
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from product_type
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+
+	<!-- 查询最大排序号 -->
+	<select id="findMaxSortByUser" parameterType="com.XZYHOrderingFood.back.pojo.ProductType" resultType="int">
+	select max(sort) from product_type
+	where tuser_id = #{id}
+	and is_delete = 1
+	</select>
+
+	<!-- 查询类型是否存在 -->
+	<select id="findNameIsExist" parameterType="com.XZYHOrderingFood.back.pojo.ProductType" resultType="com.XZYHOrderingFood.back.pojo.ProductType">
+		select
+		<include refid="Base_Column_List" />
+		from product_type
+		where is_delete = 1
+		<if test="id != null">
+			and id &lt;&gt; #{id}
+		</if>
+		<if test="tuserId != null">
+			and tuser_id = #{tuserId}
+		</if>
+		<if test="meunName != null">
+			and meun_name = #{meunName}
+		</if>
+	</select>
+
+	<!-- add by zpy 查询该商户所有单品列表-->
+	<select id="selectProductTypeByShopId" parameterType="com.XZYHOrderingFood.back.pojo.ProductType"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from product_type
+		where tuser_id = #{tuserId}
+		and is_delete = 1
+		order by sort
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from product_type
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+	<insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.ProductType">
+    insert into product_type (id, tuser_id, meun_name,
+      is_edit, create_id, create_time,
+      modify_id, modify_time, is_delete,
+      sort, meun_id)
+    values (#{id,jdbcType=VARCHAR}, #{tuserId,jdbcType=VARCHAR}, #{meunName,jdbcType=VARCHAR},
+      #{isEdit,jdbcType=INTEGER}, #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=INTEGER},
+      #{sort,jdbcType=INTEGER}, #{meunId,jdbcType=VARCHAR})
+  </insert>
+	<insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.ProductType">
+		insert into product_type
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="tuserId != null">
+				tuser_id,
+			</if>
+			<if test="meunName != null">
+				meun_name,
+			</if>
+			<if test="isEdit != null">
+				is_edit,
+			</if>
+			<if test="createId != null">
+				create_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifyId != null">
+				modify_id,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="isDelete != null">
+				is_delete,
+			</if>
+			<if test="sort != null">
+				sort,
+			</if>
+			<if test="meunId != null">
+				meun_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				#{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="meunName != null">
+				#{meunName,jdbcType=VARCHAR},
+			</if>
+			<if test="isEdit != null">
+				#{isEdit,jdbcType=INTEGER},
+			</if>
+			<if test="createId != null">
+				#{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				#{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDelete != null">
+				#{isDelete,jdbcType=INTEGER},
+			</if>
+			<if test="sort != null">
+				#{sort,jdbcType=INTEGER},
+			</if>
+			<if test="meunId != null">
+				#{meunId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.ProductType">
+		update product_type
+		<set>
+			<if test="tuserId != null">
+				tuser_id = #{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="meunName != null">
+				meun_name = #{meunName,jdbcType=VARCHAR},
+			</if>
+			<if test="isEdit != null">
+				is_edit = #{isEdit,jdbcType=INTEGER},
+			</if>
+			<if test="createId != null">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDelete != null">
+				is_delete = #{isDelete,jdbcType=INTEGER},
+			</if>
+			<if test="sort != null">
+				sort = #{sort,jdbcType=INTEGER},
+			</if>
+			<if test="meunId != null">
+				meun_id = #{meunId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.ProductType">
+    update product_type
+    set tuser_id = #{tuserId,jdbcType=VARCHAR},
+      meun_name = #{meunName,jdbcType=VARCHAR},
+      is_edit = #{isEdit,jdbcType=INTEGER},
+      create_id = #{createId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_id = #{modifyId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=INTEGER},
+      sort = #{sort,jdbcType=INTEGER},
+      meun_id = #{meunId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

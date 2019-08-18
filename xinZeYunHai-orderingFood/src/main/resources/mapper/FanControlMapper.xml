@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.FanControlMapper">
+	<resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.FanControl">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+		<result column="head_img_address" jdbcType="VARCHAR" property="headImgAddress" />
+		<result column="wechat_name" jdbcType="VARCHAR" property="wechatName" />
+		<result column="username" jdbcType="VARCHAR" property="username" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="focus_time" jdbcType="TIMESTAMP" property="focusTime" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="is_focus" jdbcType="INTEGER" property="isFocus" />
+		<result column="open_id" jdbcType="VARCHAR" property="openId" />
+		
+		<result column="temp_event_key" jdbcType="VARCHAR" property="tempEventKey" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, tuser_id, head_img_address, wechat_name, username, phone, focus_time, create_id,
+    create_time, modify_id, modify_time, is_focus, open_id, temp_event_key
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from fan_control
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询粉丝内容 -->
+	<select id="findFanControlInfo" parameterType="com.XZYHOrderingFood.back.pojo.FanControl"
+	resultType="com.XZYHOrderingFood.back.pojo.FanControl">
+		select
+	 id, tuser_id, head_img_address, wechat_name, username, phone, focus_time, create_id,
+    create_time, modify_id, modify_time, is_focus, open_id
+		from fan_control
+		where open_id = #{openId}
+	</select>
+
+	<!-- add by zpy 模糊查询方法-->
+	<select id="selectFanFuzzyQuery" parameterType="com.XZYHOrderingFood.back.pojo.FanControl"
+			resultMap="BaseResultMap" >
+		select
+		<include refid="Base_Column_List" />
+		from fan_control
+		<where>
+			<if test="openId != null">
+				and open_id like CONCAT('%','${openId}','%')
+			</if>
+			<if test="wechatName != null">
+				and wechat_name like CONCAT('%','${wechatName}','%')
+			</if>
+			<if test="username != null">
+				and username like CONCAT('%','${username}','%')
+			</if>
+			<if test="phone != null">
+				and phone like CONCAT('%','${phone}','%')
+			</if>
+			<if test="startTime != null and endTime != null">
+				and focus_time &gt;= #{startTime} and focus_time &lt;= #{endTime}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from fan_control
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+	<!-- 通过openId删除用户 -->
+<!-- 	<delete id="delByOpenId" parameterType="java.lang.String">
+		delete from fan_control
+		where open_id = #{openId,jdbcType=VARCHAR}
+	</delete> -->
+
+	<insert id="insert"
+		parameterType="com.XZYHOrderingFood.back.pojo.FanControl">
+		insert into fan_control (id, tuser_id, head_img_address,
+		wechat_name, username, phone,
+		focus_time, create_id, create_time,
+		modify_id, modify_time, is_focus
+		)
+		values (#{id,jdbcType=VARCHAR}, #{tuserId,jdbcType=VARCHAR},
+		#{headImgAddress,jdbcType=VARCHAR},
+		#{wechatName,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+		#{focusTime,jdbcType=TIMESTAMP}, #{createId,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{isFocus,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.FanControl">
+		insert into fan_control
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="tuserId != null">
+				tuser_id,
+			</if>
+			<if test="headImgAddress != null">
+				head_img_address,
+			</if>
+			<if test="wechatName != null">
+				wechat_name,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="focusTime != null">
+				focus_time,
+			</if>
+			<if test="createId != null">
+				create_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifyId != null">
+				modify_id,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="isFocus != null">
+				is_focus,
+			</if>
+			<if test="openId != null">
+				open_id,
+			</if>
+			<!-- <if test="tempEventKey != null">
+				temp_event_key,
+			</if> -->
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				#{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="headImgAddress != null">
+				#{headImgAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="wechatName != null">
+				#{wechatName,jdbcType=VARCHAR},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="focusTime != null">
+				#{focusTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createId != null">
+				#{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				#{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isFocus != null">
+				#{isFocus,jdbcType=INTEGER},
+			</if>
+			<if test="openId != null">
+				#{openId,jdbcType=VARCHAR},
+			</if>
+			<!-- <if test="tempEventKey != null">
+				#{tempEventKey},
+			</if> -->
+		</trim>
+	</insert>
+	<!-- 通过openid 取消用户的关注 -->
+	<update id="updateByOpenId" parameterType="com.XZYHOrderingFood.back.pojo.FanControl">
+		update fan_control
+		set is_focus = #{isFocus}
+		where open_id = #{openId}
+	</update>
+
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.FanControl">
+		update fan_control
+		<set>
+			<if test="tuserId != null">
+				tuser_id = #{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="headImgAddress != null">
+				head_img_address = #{headImgAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="wechatName != null">
+				wechat_name = #{wechatName,jdbcType=VARCHAR},
+			</if>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="focusTime != null">
+				focus_time = #{focusTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createId != null">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isFocus != null">
+				is_focus = #{isFocus,jdbcType=INTEGER},
+			</if>
+			<if test="openId != null">
+				open_id = #{openId},
+			</if>
+			<if test="tempEventKey != null">
+				temp_event_key = #{tempEventKey},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.FanControl">
+    update fan_control
+    set tuser_id = #{tuserId,jdbcType=VARCHAR},
+      head_img_address = #{headImgAddress,jdbcType=VARCHAR},
+      wechat_name = #{wechatName,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      focus_time = #{focusTime,jdbcType=TIMESTAMP},
+      create_id = #{createId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_id = #{modifyId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      is_focus = #{isFocus,jdbcType=INTEGER},
+      open_id = #{openId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.XZYHOrderingFood.back.dao.PresentationMapper">
+	<resultMap id="BaseResultMap"
+		type="com.XZYHOrderingFood.back.pojo.Presentation">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="cashout_time" jdbcType="TIMESTAMP"
+			property="cashoutTime" />
+		<result column="cashout_money" jdbcType="DECIMAL"
+			property="cashoutMoney" />
+		<result column="uncashout_money" jdbcType="DECIMAL"
+			property="uncashoutMoney" />
+		<result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+		<result column="cashout_flag" jdbcType="INTEGER"
+			property="cashoutFlag" />
+		<result column="application_id" jdbcType="VARCHAR"
+			property="applicationId" />
+		<result column="create_id" jdbcType="VARCHAR"
+			property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="modify_id" jdbcType="VARCHAR"
+			property="modifyId" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, cashout_time, cashout_money, uncashout_money, tuser_id, cashout_flag,
+		application_id,
+		create_id, create_time, modify_id, modify_time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from presentation
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from presentation
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.XZYHOrderingFood.back.pojo.Presentation">
+		insert into presentation (id, cashout_time, cashout_money,
+		uncashout_money, tuser_id, cashout_flag,
+		application_id, create_id, create_time,
+		modify_id, modify_time)
+		values (#{id,jdbcType=VARCHAR}, #{cashoutTime,jdbcType=TIMESTAMP},
+		#{cashoutMoney,jdbcType=DECIMAL},
+		#{uncashoutMoney,jdbcType=DECIMAL}, #{tuserId,jdbcType=VARCHAR}, #{cashoutFlag,jdbcType=INTEGER},
+		#{applicationId,jdbcType=VARCHAR}, #{createId,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.Presentation">
+		insert into presentation
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="cashoutTime != null">
+				cashout_time,
+			</if>
+			<if test="cashoutMoney != null">
+				cashout_money,
+			</if>
+			<if test="uncashoutMoney != null">
+				uncashout_money,
+			</if>
+			<if test="tuserId != null">
+				tuser_id,
+			</if>
+			<if test="cashoutFlag != null">
+				cashout_flag,
+			</if>
+			<if test="applicationId != null">
+				application_id,
+			</if>
+			<if test="createId != null">
+				create_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifyId != null">
+				modify_id,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="cashoutTime != null">
+				#{cashoutTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cashoutMoney != null">
+				#{cashoutMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="uncashoutMoney != null">
+				#{uncashoutMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="tuserId != null">
+				#{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="cashoutFlag != null">
+				#{cashoutFlag,jdbcType=INTEGER},
+			</if>
+			<if test="applicationId != null">
+				#{applicationId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				#{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				#{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.Presentation">
+		update presentation
+		<set>
+			<if test="cashoutTime != null">
+				cashout_time = #{cashoutTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cashoutMoney != null">
+				cashout_money = #{cashoutMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="uncashoutMoney != null">
+				uncashout_money = #{uncashoutMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="tuserId != null">
+				tuser_id = #{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="cashoutFlag != null">
+				cashout_flag = #{cashoutFlag,jdbcType=INTEGER},
+			</if>
+			<if test="applicationId != null">
+				application_id = #{applicationId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.XZYHOrderingFood.back.pojo.Presentation">
+		update presentation
+		set cashout_time = #{cashoutTime,jdbcType=TIMESTAMP},
+		cashout_money = #{cashoutMoney,jdbcType=DECIMAL},
+		uncashout_money = #{uncashoutMoney,jdbcType=DECIMAL},
+		tuser_id = #{tuserId,jdbcType=VARCHAR},
+		cashout_flag = #{cashoutFlag,jdbcType=INTEGER},
+		application_id = #{applicationId,jdbcType=VARCHAR},
+		create_id = #{createId,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modify_id = #{modifyId,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

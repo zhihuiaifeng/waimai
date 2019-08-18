@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.OrderDetailsMapper">
+	<resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.OrderDetails">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="food_name" jdbcType="VARCHAR" property="foodName" />
+		<result column="food_number" jdbcType="INTEGER" property="foodNumber" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+		<result column="create_id" jdbcType="VARCHAR" property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+		<result column="tflavor_id" jdbcType="VARCHAR" property="tflavorId" />
+		<result column="food_id" jdbcType="VARCHAR" property="foodId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    id, price, food_name, food_number, order_id, tuser_id, create_id, create_time, modify_id,
+    modify_time, order_time, tflavor_id, food_id
+  </sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_details
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<!-- add by zpy 通过订单id集合查询详情表信息-->
+	<select id="getOrderDetailsByListId" parameterType="java.util.Map"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_details
+		where order_id in
+		<foreach collection="list" index="index" item="item" open="("
+				 separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<!--自己修改的51行数据-->
+	<!-- add by zpy 通过userid和订单id查询详情-->
+	<select id="selectOrderDetailsByOrderCode" parameterType="com.XZYHOrderingFood.back.pojo.OrderTable"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_details
+		<where>
+			tuser_id = #{tuserId} and
+				order_id =#{orderCode}
+		</where>
+	</select>
+
+	<!-- add by zpy 通过商户id查询订单详情-->
+	<select id="getOrderDetailsByShopId" parameterType="com.XZYHOrderingFood.back.pojo.TUser"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_details
+		<where>
+			<if test="isShops == 1">
+				tuser_id = #{id}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from order_details
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+	<insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.OrderDetails">
+    insert into order_details (id, price, food_name,
+      food_number, order_id, tuser_id,
+      create_id, create_time, modify_id,
+      modify_time, order_time, tflavor_id,
+      food_id)
+    values (#{id,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{foodName,jdbcType=VARCHAR},
+      #{foodNumber,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, #{tuserId,jdbcType=VARCHAR},
+      #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyId,jdbcType=VARCHAR},
+      #{modifyTime,jdbcType=TIMESTAMP}, #{orderTime,jdbcType=TIMESTAMP}, #{tflavorId,jdbcType=VARCHAR},
+      #{foodId,jdbcType=VARCHAR})
+  </insert>
+
+	<!-- add by zpy 添加订单详情-->
+	<insert id="insertOrderDetails" parameterType="java.util.List">
+		insert into order_details
+		(id, price, food_name, food_number, order_id, tuser_id, create_id, create_time, order_time,  food_id, tflavor_id)
+		values
+		<foreach collection="list" index="index" item="item" open="("
+				 separator="),(" close=")">
+			<trim suffixOverrides=",">
+			#{item.id,jdbcType=VARCHAR},
+			#{item.price,jdbcType=DECIMAL},
+			#{item.foodName,jdbcType=VARCHAR},
+			#{item.foodNumber,jdbcType=VARCHAR},
+			#{item.orderId,jdbcType=VARCHAR},
+			#{item.tuserId,jdbcType=VARCHAR},
+			#{item.createId,jdbcType=VARCHAR},
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.orderTime,jdbcType=TIMESTAMP},
+			#{item.foodId,jdbcType=TIMESTAMP},
+			<if test="item.tflavorId != null">
+			#{item.tflavorId,jdbcType=TIMESTAMP},
+			</if>
+			<if test="item.tflavorId == null">
+			'',
+			</if>
+			</trim>
+		</foreach>
+	</insert>
+
+
+	<insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.OrderDetails">
+		insert into order_details
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="foodName != null">
+				food_name,
+			</if>
+			<if test="foodNumber != null">
+				food_number,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="tuserId != null">
+				tuser_id,
+			</if>
+			<if test="createId != null">
+				create_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifyId != null">
+				modify_id,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="orderTime != null">
+				order_time,
+			</if>
+			<if test="tflavorId != null">
+				tflavor_id,
+			</if>
+			<if test="foodId != null">
+				food_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DECIMAL},
+			</if>
+			<if test="foodName != null">
+				#{foodName,jdbcType=VARCHAR},
+			</if>
+			<if test="foodNumber != null">
+				#{foodNumber,jdbcType=INTEGER},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				#{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				#{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				#{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="orderTime != null">
+				#{orderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tflavorId != null">
+				#{tflavorId,jdbcType=VARCHAR},
+			</if>
+			<if test="foodId != null">
+				#{foodId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.OrderDetails">
+		update order_details
+		<set>
+			<if test="price != null">
+				price = #{price,jdbcType=DECIMAL},
+			</if>
+			<if test="foodName != null">
+				food_name = #{foodName,jdbcType=VARCHAR},
+			</if>
+			<if test="foodNumber != null">
+				food_number = #{foodNumber,jdbcType=INTEGER},
+			</if>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				tuser_id = #{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="orderTime != null">
+				order_time = #{orderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tflavorId != null">
+				tflavor_id = #{tflavorId,jdbcType=VARCHAR},
+			</if>
+			<if test="foodId != null">
+				food_id = #{foodId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.OrderDetails">
+    update order_details
+    set price = #{price,jdbcType=DECIMAL},
+      food_name = #{foodName,jdbcType=VARCHAR},
+      food_number = #{foodNumber,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      tuser_id = #{tuserId,jdbcType=VARCHAR},
+      create_id = #{createId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_id = #{modifyId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      order_time = #{orderTime,jdbcType=TIMESTAMP},
+      tflavor_id = #{tflavorId,jdbcType=VARCHAR},
+      food_id = #{foodId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

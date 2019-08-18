@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.TicketMachineMapper">
+    <resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.TicketMachine">
+        <result column="id" jdbcType="VARCHAR" property="id" />
+        <result column="machine_code" jdbcType="VARCHAR" property="machineCode" />
+        <result column="print_content" jdbcType="VARCHAR" property="printContent" />
+        <result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+        <result column="create_id" jdbcType="VARCHAR" property="createId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+        <result column="is_used" jdbcType="INTEGER" property="isUsed" />
+        <result column="msign" jdbcType="VARCHAR" property="msign" />
+        <result column="version" jdbcType="VARCHAR" property="version" />
+        <result column="is_locking" jdbcType="INTEGER" property="isLocking" />
+        <result column="shops_name" jdbcType="VARCHAR" property="shopsName" />
+
+        <result column="bangding_status" jdbcType="INTEGER" property="bangdingStatus" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, machine_code, print_content,
+        tuser_id, create_id, create_time,
+        modify_id, modify_time, is_used,
+        msign, version, is_locking,
+        shops_name, bangding_status
+    </sql>
+    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from ticket_machine
+        where tuser_id = #{id}
+    </select>
+
+    <!-- add by zpy 修改小票机失败-->
+    <update id="updateTicketStautsByUserId" parameterType="com.XZYHOrderingFood.back.pojo.TUser">
+    update ticket_machine
+    <set>
+        is_used = #{ticketIsUsed}
+    </set>
+    where tuser_id = #{id,jdbcType=VARCHAR}
+</update>
+
+    <insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.TicketMachine">
+    insert into ticket_machine (id, machine_code, print_content,
+      tuser_id, create_id, create_time,
+      modify_id, modify_time, is_used,
+      msign, version, is_locking,
+      shops_name)
+    values (#{id,jdbcType=VARCHAR}, #{machineCode,jdbcType=VARCHAR}, #{printContent,jdbcType=VARCHAR},
+      #{tuserId,jdbcType=VARCHAR}, #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{isUsed,jdbcType=INTEGER},
+      #{msign,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, #{isLocking,jdbcType=INTEGER},
+      #{shopsName,jdbcType=VARCHAR})
+  </insert>
+  
+   <!-- 更新小票机 -->
+   <update id="update" parameterType="com.XZYHOrderingFood.back.pojo.TicketMachine">
+   	update ticket_machine
+   	<set>
+   		<if test="isUsed != null">
+   			is_used = #{isUsed},
+   		</if>
+   		<if test="machineCode != null">
+   			machine_code = #{machineCode},
+   		</if>
+   		<if test="isLocking != null">
+   			is_locking = #{isLocking},
+   		</if>
+   		<if test="msign != null">
+   			msign = #{msign},
+   		</if>
+   		<if test="shopsName != null">
+   			shops_name = #{shopsName},
+   		</if>
+   		<if test="version != null">
+   			version = #{version},
+   		</if>
+   	</set>
+   	where id = #{id,jdbcType=VARCHAR}
+   </update>
+    
+   
+    <insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.TicketMachine">
+        insert into ticket_machine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="machineCode != null">
+                machine_code,
+            </if>
+            <if test="printContent != null">
+                print_content,
+            </if>
+            <if test="tuserId != null">
+                tuser_id,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyId != null">
+                modify_id,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="isUsed != null">
+                is_used,
+            </if>
+            <if test="msign != null">
+                msign,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="isLocking != null">
+                is_locking,
+            </if>
+            <if test="shopsName != null">
+                shops_name,
+            </if>
+
+            <if test="bangdingStatus != null">
+            	bangding_status,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="machineCode != null">
+                #{machineCode,jdbcType=VARCHAR},
+            </if>
+            <if test="printContent != null">
+                #{printContent,jdbcType=VARCHAR},
+            </if>
+            <if test="tuserId != null">
+                #{tuserId,jdbcType=VARCHAR},
+            </if>
+            <if test="createId != null">
+                #{createId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyId != null">
+                #{modifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isUsed != null">
+                #{isUsed,jdbcType=INTEGER},
+            </if>
+            <if test="msign != null">
+                #{msign,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="isLocking != null">
+                #{isLocking,jdbcType=INTEGER},
+            </if>
+            <if test="shopsName != null">
+                #{shopsName,jdbcType=VARCHAR},
+            </if>
+            <if test="bangdingStatus != null">
+            	#{bangdingStatus},
+            </if>
+        </trim>
+    </insert>
+</mapper>

@@ -1,0 +1,133 @@
+mybatis:
+  configLocation: classpath:mybatis-config.xml
+  mapperLocations: classpath:mapper/*.xml
+#debug=true
+server:
+  port: 8099
+  servlet:
+    context-path: /vueFoodPC
+spring:
+  cache:
+    type: caffeine
+    cache-names:
+    - checkToken
+    caffeine:
+      spec: maximumSize=5000,expireAfterAccess=8000s
+ # 数据源配置
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+
+    # 数据库 
+    url: jdbc:mysql://192.168.1.116:3306/xinze?useUnicode=true&amp;characterEncoding=UTF-8&amp;&allowMultiQueries=true
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 10
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 合并多个DruidDataSource的监控数据
+    useGlobalDataSourceStat: true
+
+# 上传文件大小限制    
+  servlet:
+    multipart:
+      max-file-size: 500Mb
+      max-request-size: 500Mb
+  jackson:
+  # 全局配置   返回前端值为 null的属性不会返回
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd HH:mm:ss
+    locale: GMT+8
+  
+  #reids缓存  
+  redis:
+    database: 0
+    host: 192.168.1.116
+    password: 
+    port: 6379
+    timeout: 5000
+    jedis:
+      pool:
+        max-active: 1024
+        max-idle: 100
+        max-wait: -1
+        min-idle: '0'
+  thymeleaf:
+    servlet:
+      content-type: text/html
+    mode: HTML5 
+#pagehelper分页插件
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+  
+#项目config文件配置
+tox: 
+  config: 
+    #服务器地址
+    server-url: http://192.168.1.116:8080/xzyhImg/
+    #上传路径
+    upload-path: E:\\donglong\\tomcat\\apache-tomcat-8.5.9\\webapps\\xzyhImg\\
+    #单品图片
+    product-img: images\\productImg\\
+    #首页图片
+    shop-img: images\\shopImg\\
+    #小票机
+    client-id: 1097777372
+    client-secret: cdcce275b145df2a4b309ccbc2c1925e
+    #阿里短信
+    accessKeyId: LTAIQlHxnhDgrWgs
+    accessSecret: 7vOdirW2wQ6uXHntAgfxpgjhjdXuKH
+    #自定义私有token 便于验证公众平台URL时使用
+    self-token: xzyh
+    #点餐宝appurl
+    app-page-url: http://xinzeyunhai.com
+    #二维码图片
+    qr-img: images\\qrImg\\
+    
+#微信
+weixin:
+    #开发者id
+    appID: wx72ba401dfbdc45fb
+    #开发者密码
+    appSecret: a9e3c8b48b86be98b46e9e366eb0367d
+    #微信授权回调url
+    redirectUri: http://www.xinzeyunhai.com/vueFoodPC/appLogin
+    
+    
+    
+    
+    
+
+
+
+  
+  
+
+
+
+
+  
+ 
+
+    
+

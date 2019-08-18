@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.XZYHOrderingFood.back.dao.TFlavorMapper" >
+  <resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.TFlavor" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="tuser_id" property="tuserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, price, product_id, tuser_id, create_time, sort
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_flavor
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 通过商品id 查询口味 -->
+ <select id="getListByProductId" parameterType="java.lang.String" resultMap="BaseResultMap">
+ 	select 
+    <include refid="Base_Column_List" />
+    from t_flavor
+    where product_id = #{productId}
+    order by sort
+ </select>
+
+  <!-- add by zpy 通过idlist查询所有口味-->
+  <select id="selectTFavorListByIdList" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_flavor
+    where product_id in
+    <foreach collection="list" index="index" item="item" open="("
+             separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <!-- add by zpy 通过主键idlist查询对应口味-->
+  <select id="selectTFavorListById" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_flavor
+    where tuser_id in
+    <foreach collection="list" index="index" item="item" open="("
+             separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <!-- add by zpy 通过单品id和口味名称查询数据-->
+  <select id="selectByProductIdAndName" parameterType="com.XZYHOrderingFood.back.pojo.OrderDetails" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_flavor
+    <where>
+      and product_id = #{foodId}
+      and `name` = #{tflavorName}
+    </where>
+  </select>
+
+  <!-- add by zpy 通过主键idlist查询对应口味-->
+  <select id="selectTFavorList" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_flavor
+    where id in
+    <foreach collection="list" index="index" item="item" open="("
+             separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <!-- 查询同一商品的最大sort值 -->
+<select id="findMaxSortByProductId" parameterType="java.lang.String" resultType="java.lang.Integer">
+	 select
+     max(sort)
+    from t_flavor
+    where product_id = #{productId}
+</select>
+ <!-- 删除商品的口味 -->
+ <delete id="delByProductId" parameterType="java.lang.String">
+ 	delete from t_flavor
+ 	where product_id = #{productId}
+ </delete>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_flavor
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.TFlavor" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_flavor (name, price, product_id, 
+      tuser_id, create_time)
+    values (#{name,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{productId,jdbcType=VARCHAR}, 
+      #{tuserId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.TFlavor" >
+    <selectKey resultType="java.lang.String" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_flavor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null">
+      	id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="tuserId != null" >
+        tuser_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="sort != null">
+      	sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null">
+      	#{id},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="tuserId != null" >
+        #{tuserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null">
+      	#{sort},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.TFlavor" >
+    update t_flavor
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="tuserId != null" >
+        tuser_id = #{tuserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null">
+      	sort = #{sort},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.TFlavor" >
+    update t_flavor
+    set name = #{name,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      product_id = #{productId,jdbcType=VARCHAR},
+      tuser_id = #{tuserId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

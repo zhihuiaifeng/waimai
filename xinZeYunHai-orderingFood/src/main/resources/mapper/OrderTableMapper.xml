@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.XZYHOrderingFood.back.dao.OrderTableMapper">
+  <resultMap id="BaseResultMap" type="com.XZYHOrderingFood.back.pojo.OrderTable">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="total_money" jdbcType="DECIMAL" property="totalMoney" />
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="table_number" jdbcType="VARCHAR" property="tableNumber" />
+    <result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+    <result column="is_cashout" jdbcType="INTEGER" property="isCashout" />
+    <result column="qr_code_id" jdbcType="VARCHAR" property="qrCodeId" />
+    <result column="create_id" jdbcType="VARCHAR" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="meals_number" jdbcType="INTEGER" property="mealsNumber" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_time, total_money, order_status, table_number, tuser_id, is_cashout, qr_code_id,
+    create_id, create_time, modify_id, modify_time, order_code, meals_number, is_delete,
+    open_id, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_table
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <!-- add by zpy 分页查询订单信息 -->
+  <select id="getOrderTableByExample" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_table
+    <where>
+      <trim prefixOverrides="and">
+        <if test="param.isShops == 1">
+          and tuser_id = #{param.shopId}
+        </if>
+        <if test="param.orderTable.orderTime != null">
+          and order_time between DATE_FORMAT(#{param.timeBegin}, '%Y-%m-%d %T:%i:%s') and DATE_FORMAT(#{param.timeEnd}, '%Y-%m-%d %T:%i:%s')
+        </if>
+        <if test="param.moneyBegin != null and param.moneyEnd != null">
+          and total_money between #{param.moneyBegin} and #{param.moneyEnd}
+        </if>
+        <if test="param.moneyBegin != null and param.moneyEnd == null">
+          and total_money &gt;= #{param.moneyBegin}
+        </if>
+        <if test="param.moneyBegin == null and param.moneyEnd != null">
+          and total_money &lt;= #{param.moneyEnd}
+        </if>
+        <if test="param.orderTable.tableNumber != null and param.orderTable.tableNumber != '' ">
+          and table_number = #{param.orderTable.tableNumber}
+        </if>
+        and is_delete = 1
+      </trim>
+    </where>
+    order by create_time desc
+  </select>
+
+  <!-- add by zpy 通过openid和userid 查询最新订单-->
+  <select id="selectByOpenIdAndUserId" parameterType="com.XZYHOrderingFood.back.pojo.OrderTable"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_table
+    <where>
+      tuser_id = #{tuserId}
+      and open_id = #{openId}
+    </where>
+    order by order_time desc
+    limit 1
+  </select>
+
+  <!-- add by zpy-->
+  <select id="countAllMoney" parameterType="com.XZYHOrderingFood.back.pojo.TUser"
+          resultType="java.math.BigDecimal">
+    select
+    sum(total_money)
+    from order_table
+    where order_status = 2
+    <if test="isShops == 1">
+      and tuser_id = #{id}
+    </if>
+  </select>
+
+  <!-- add by zpy 查询订单详情 -->
+  <select id="selectOrderTableIdByCode" parameterType="java.util.Map"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_table
+    where order_code = #{param.orderCode}
+        and tuser_id = #{param.id}
+  </select>
+
+  <!-- add by zpy-->
+  <select id="getOrderTableByTime" parameterType="java.util.Map"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_table
+    where order_time between DATE_FORMAT(#{param.dateStart}, '%Y-%m-%d %T:%i:%s')
+    and DATE_FORMAT(#{param.dateEnd}, '%Y-%m-%d %T:%i:%s')
+    and order_status=2
+    <if test="param.isShops == 1">
+      and tuser_id = #{param.id}
+    </if>
+  </select>
+
+  <!-- add by zpy-->
+  <update id="updateBytOrderCodeAndShopId" parameterType="java.util.Map">
+    update
+    order_table
+    <set>
+      order_status = #{param.orderStatus}
+    </set>
+    <where>
+      <trim suffixOverrides="and">
+        <if test="param.isShops == 1">
+          and tuser_id = #{param.shopId}
+        </if>
+        and order_code = #{param.orderCode}
+      </trim>
+    </where>
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from order_table
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.XZYHOrderingFood.back.pojo.OrderTable">
+    insert into order_table (id, order_time, total_money,
+      order_status, table_number, tuser_id,
+      is_cashout, qr_code_id, create_id,
+      create_time, modify_id, modify_time,
+      order_code, meals_number, is_delete,
+      open_id, remark)
+    values (#{id,jdbcType=VARCHAR}, #{orderTime,jdbcType=TIMESTAMP}, #{totalMoney,jdbcType=DECIMAL},
+      #{orderStatus,jdbcType=INTEGER}, #{tableNumber,jdbcType=VARCHAR}, #{tuserId,jdbcType=VARCHAR},
+      #{isCashout,jdbcType=INTEGER}, #{qrCodeId,jdbcType=VARCHAR}, #{createId,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+      #{orderCode,jdbcType=VARCHAR}, #{mealsNumber,jdbcType=INTEGER}, #{isDelete,jdbcType=INTEGER},
+      #{openId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.XZYHOrderingFood.back.pojo.OrderTable">
+    insert into order_table
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderTime != null">
+        order_time,
+      </if>
+      <if test="totalMoney != null">
+        total_money,
+      </if>
+      <if test="orderStatus != null">
+        order_status,
+      </if>
+      <if test="tableNumber != null">
+        table_number,
+      </if>
+      <if test="tuserId != null">
+        tuser_id,
+      </if>
+      <if test="isCashout != null">
+        is_cashout,
+      </if>
+      <if test="qrCodeId != null">
+        qr_code_id,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyId != null">
+        modify_id,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+      <if test="orderCode != null">
+        order_code,
+      </if>
+      <if test="mealsNumber != null">
+        meals_number,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orderTime != null">
+        #{orderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalMoney != null">
+        #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="orderStatus != null">
+        #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="tableNumber != null">
+        #{tableNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="tuserId != null">
+        #{tuserId,jdbcType=VARCHAR},
+      </if>
+      <if test="isCashout != null">
+        #{isCashout,jdbcType=INTEGER},
+      </if>
+      <if test="qrCodeId != null">
+        #{qrCodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyId != null">
+        #{modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mealsNumber != null">
+        #{mealsNumber,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.XZYHOrderingFood.back.pojo.OrderTable">
+    update order_table
+    <set>
+      <if test="orderTime != null">
+        order_time = #{orderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalMoney != null">
+        total_money = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="orderStatus != null">
+        order_status = #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="tableNumber != null">
+        table_number = #{tableNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="tuserId != null">
+        tuser_id = #{tuserId,jdbcType=VARCHAR},
+      </if>
+      <if test="isCashout != null">
+        is_cashout = #{isCashout,jdbcType=INTEGER},
+      </if>
+      <if test="qrCodeId != null">
+        qr_code_id = #{qrCodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyId != null">
+        modify_id = #{modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mealsNumber != null">
+        meals_number = #{mealsNumber,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.XZYHOrderingFood.back.pojo.OrderTable">
+    update order_table
+    set order_time = #{orderTime,jdbcType=TIMESTAMP},
+      total_money = #{totalMoney,jdbcType=DECIMAL},
+      order_status = #{orderStatus,jdbcType=INTEGER},
+      table_number = #{tableNumber,jdbcType=VARCHAR},
+      tuser_id = #{tuserId,jdbcType=VARCHAR},
+      is_cashout = #{isCashout,jdbcType=INTEGER},
+      qr_code_id = #{qrCodeId,jdbcType=VARCHAR},
+      create_id = #{createId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_id = #{modifyId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      order_code = #{orderCode,jdbcType=VARCHAR},
+      meals_number = #{mealsNumber,jdbcType=INTEGER},
+      is_delete = #{isDelete,jdbcType=INTEGER},
+      open_id = #{openId,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

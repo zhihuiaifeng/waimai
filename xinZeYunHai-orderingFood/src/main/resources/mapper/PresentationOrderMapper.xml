@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.XZYHOrderingFood.back.dao.PresentationOrderMapper">
+	<resultMap id="BaseResultMap"
+		type="com.XZYHOrderingFood.back.pojo.PresentationOrder">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="presentation_id" jdbcType="VARCHAR"
+			property="presentationId" />
+		<result column="tuser_id" jdbcType="VARCHAR" property="tuserId" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="application_id" jdbcType="VARCHAR"
+			property="applicationId" />
+		<result column="create_id" jdbcType="VARCHAR"
+			property="createId" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="modify_id" jdbcType="VARCHAR"
+			property="modifyId" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, presentation_id, tuser_id, order_id, application_id, create_id,
+		create_time,
+		modify_id, modify_time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from presentation_order
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from presentation_order
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.XZYHOrderingFood.back.pojo.PresentationOrder">
+		insert into presentation_order (id, presentation_id, tuser_id,
+		order_id, application_id, create_id,
+		create_time, modify_id, modify_time
+		)
+		values (#{id,jdbcType=VARCHAR}, #{presentationId,jdbcType=VARCHAR},
+		#{tuserId,jdbcType=VARCHAR},
+		#{orderId,jdbcType=VARCHAR}, #{applicationId,jdbcType=VARCHAR}, #{createId,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{modifyId,jdbcType=VARCHAR},
+		#{modifyTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.PresentationOrder">
+		insert into presentation_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="presentationId != null">
+				presentation_id,
+			</if>
+			<if test="tuserId != null">
+				tuser_id,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="applicationId != null">
+				application_id,
+			</if>
+			<if test="createId != null">
+				create_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifyId != null">
+				modify_id,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="presentationId != null">
+				#{presentationId,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				#{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="applicationId != null">
+				#{applicationId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				#{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				#{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.XZYHOrderingFood.back.pojo.PresentationOrder">
+		update presentation_order
+		<set>
+			<if test="presentationId != null">
+				presentation_id = #{presentationId,jdbcType=VARCHAR},
+			</if>
+			<if test="tuserId != null">
+				tuser_id = #{tuserId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="applicationId != null">
+				application_id = #{applicationId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.XZYHOrderingFood.back.pojo.PresentationOrder">
+		update presentation_order
+		set presentation_id = #{presentationId,jdbcType=VARCHAR},
+		tuser_id = #{tuserId,jdbcType=VARCHAR},
+		order_id = #{orderId,jdbcType=VARCHAR},
+		application_id = #{applicationId,jdbcType=VARCHAR},
+		create_id = #{createId,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modify_id = #{modifyId,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>
